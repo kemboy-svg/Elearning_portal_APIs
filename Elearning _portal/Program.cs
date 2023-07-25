@@ -1,15 +1,38 @@
 using Elearning__portal.Data;
 using Elearning__portal.Models;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string CORS_POLICY = "CORS_POLICY";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CORS_POLICY, policy =>
+    {
+        policy.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 builder.Services.AddControllers();
+
+
+//Enable form options here
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBoundaryLengthLimit = int.MaxValue;
+    options.MemoryBufferThreshold = int.MaxValue;
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -22,6 +45,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 var app = builder.Build();
 
+app.UseCors(CORS_POLICY);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -30,6 +55,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"UnitNotes")),
+//    RequestPath = new PathString("/UnitNotes")
+//});
 
 // Call the method to seed the admin user and role after the identity middleware
 app.UseAuthentication();

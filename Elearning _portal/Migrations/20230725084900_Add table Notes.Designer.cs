@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Elearning__portal.Migrations
 {
     [DbContext(typeof(DtabaseSet))]
-    [Migration("20230712135241_Drop roles")]
-    partial class Droproles
+    [Migration("20230725084900_Add table Notes")]
+    partial class AddtableNotes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,6 @@ namespace Elearning__portal.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("fullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -169,6 +168,30 @@ namespace Elearning__portal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Units");
+                });
+
+            modelBuilder.Entity("Elearning__portal.Models.Uploads", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

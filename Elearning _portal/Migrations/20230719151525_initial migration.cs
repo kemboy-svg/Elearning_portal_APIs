@@ -30,8 +30,7 @@ namespace Elearning__portal.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    test = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -73,9 +72,11 @@ namespace Elearning__portal.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    reg_no = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    enrolled_unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Reg_no = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Course = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,8 +89,8 @@ namespace Elearning__portal.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    unit_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    unit_name = table.Column<int>(type: "int", nullable: false)
+                    unit_code = table.Column<int>(type: "int", nullable: false),
+                    unit_name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

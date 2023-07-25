@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Elearning__portal.Migrations
 {
     [DbContext(typeof(DtabaseSet))]
-    [Migration("20230712061852_add roles")]
-    partial class addroles
+    [Migration("20230719151525_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,6 @@ namespace Elearning__portal.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("fullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -159,12 +158,12 @@ namespace Elearning__portal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("unit_code")
+                    b.Property<int>("unit_code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("unit_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("unit_name")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

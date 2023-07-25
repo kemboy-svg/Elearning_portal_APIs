@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; 
 
+
 namespace Elearning__portal.Controllers
 {
     public class LecturerController : ControllerBase
@@ -14,13 +15,15 @@ namespace Elearning__portal.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DtabaseSet _dtabaseSet;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         public LecturerController(UserManager<ApplicationUser> userManager, DtabaseSet dtabaseSet,
-            RoleManager<IdentityRole>roleManager)
+            RoleManager<IdentityRole>roleManager,IWebHostEnvironment hostEnvironment)
         {
             _userManager = userManager;
             _dtabaseSet = dtabaseSet;
             _roleManager = roleManager;
+            _hostEnvironment = hostEnvironment;
         }
         //  public LecturerController()
         // {
@@ -43,7 +46,7 @@ namespace Elearning__portal.Controllers
         
         [HttpPost]
         [Route("api/Register")]
-        public async Task<IActionResult> Add(RegisterDTO model)
+        public async Task<IActionResult> Add([FromBody] RegisterDTO model)
         {
             try
             {
@@ -86,10 +89,10 @@ namespace Elearning__portal.Controllers
 
         [HttpPut]
         [Route("api/Lecturer/{id}")]
-        public async Task<IActionResult> UpdateLecturer(int id, RegisterDTO model)
+        public async Task<IActionResult> UpdateLecturer([FromBody] RegisterDTO model, int id )
         {
             try
-            {
+             {
                 var lecturer = await _dtabaseSet.Lecturers.FindAsync(id);
 
                 if (lecturer == null)
@@ -113,11 +116,11 @@ namespace Elearning__portal.Controllers
         }
         [HttpDelete]
         [Route("api/Lecturer/{id}")]
-        public async Task<IActionResult> DeleteLecturer(int id)
+        public async Task<IActionResult> DeleteLecturer(int Id)
         {
             try
             {
-                var lecturer = await _dtabaseSet.Lecturers.FindAsync(id);
+                var lecturer = await _dtabaseSet.Lecturers.FindAsync(Id);
 
                 if (lecturer == null)
                 {
@@ -146,5 +149,48 @@ namespace Elearning__portal.Controllers
         }
 
 
+
+
+        [HttpPost]
+        [Route("api/UploadNotes")]
+
+        public async Task<IActionResult> UploadNotes(IFormFile file, [FromForm] string description)
+        {
+            if (file == null|| file.Length==0)
+            {
+                return BadRequest("No file selected");
+            }
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "UnitNotes");
+            if(!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName= Path.GetFileName(file.FileName);
+                var FilePath= Path.Combine(uploadsFolder, fileName);
+
+                using (var stream=new FileStream(FilePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            var fileDescription = new Uploads
+            {
+               
+                FileName = fileName,
+                Description = description
+            };
+            _dtabaseSet.Notes.Add(fileDescription);
+            await _dtabaseSet.SaveChangesAsync();
+            return StatusCode(200, "Notes uploaded successfully");
+            
+            
+        }
+        [HttpGet]
+        [Route("api/viewNotes")]
+
+        public async Task<IActionResult> Notes()
+        {
+            var notes=await _dtabaseSet.Notes.ToListAsync();
+
+            return Ok(notes);
+        }
     }
 }

@@ -24,6 +24,8 @@ namespace Elearning__portal.Data
 
         public new DbSet<IdentityRole> Roles { get; set; }
 
+        public DbSet<Uploads> Notes { get; set; }
+
         
     }
 }

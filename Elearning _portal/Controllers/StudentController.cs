@@ -37,8 +37,8 @@ namespace Elearning__portal.Controllers
 
 
         [HttpPost]
-        [Route("api/StdentRegister")]
-        public async Task<IActionResult> Register(RegisterDTO model)
+        [Route("api/StudentRegister")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
             try
             {
@@ -79,9 +79,10 @@ namespace Elearning__portal.Controllers
             }
         }
 
+
         [HttpPut]
-        [Route("api/Student/{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, RegisterDTO model)
+        [Route("api/Student/update{id}")]
+        public async Task<IActionResult> UpdateStudent([FromBody] RegisterDTO model, int id )
         {
             try
             {
@@ -93,9 +94,9 @@ namespace Elearning__portal.Controllers
                 }
 
                 student.fullName = model.fullName;
-                student.Reg_no = model.Reg_no;
                 student.Email = model.Email;
                 student.Course = model.Course;
+                student.Reg_no = model.Reg_no;
                 student.Age = model.Age;
 
                 _dtabaseSet.Students.Update(student);
@@ -109,14 +110,45 @@ namespace Elearning__portal.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("api/students")]
 
-        public async Task<IActionResult> Lecturers()
+        public async Task<IActionResult> Students()
         {
             var users = await _dtabaseSet.Students.ToListAsync();
             return Ok(users);
         }
+
+        [HttpDelete]
+        [Route("api/Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+
+            try
+            {
+                var student = await _dtabaseSet.Students.FindAsync(id);
+                if(student == null)
+                {
+                    return NotFound("Students not found");
+                }
+                 _dtabaseSet.Students.Remove(student);
+               await _dtabaseSet.SaveChangesAsync();
+                return StatusCode(200, "Student deleted successfully");
+            }
+            catch (Exception ex) {
+                return StatusCode(500, ex.Message);
+            }
+     
+        }
+        [HttpGet]
+        [Route("api/Notes")]
+
+        public async Task<IActionResult> Notes()
+        {
+            var notes = await _dtabaseSet.Notes.ToListAsync();
+
+            return Ok(notes);
+        }
+
     }
 }

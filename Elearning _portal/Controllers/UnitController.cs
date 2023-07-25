@@ -15,7 +15,7 @@ namespace Elearning__portal.Controllers
         }
         [HttpPost]
         [Route("api/Unit")]
-        public async Task<IActionResult> Add(Unit model )
+        public async Task<IActionResult> Add([FromBody] Unit model )
         {
 
             try
@@ -39,8 +39,8 @@ namespace Elearning__portal.Controllers
 
 
         [HttpPut]
-        [Route("api/Unit/{id}")]
-        public async Task<IActionResult> Update(int id, Unit model)
+        [Route("api/Unit{id}")]
+        public async Task<IActionResult> Update( [FromBody] Unit model, int id )
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Elearning__portal.Controllers
         }
 
         [HttpDelete]
-        [Route("api/Unit/{id}")]
+        [Route("api/Unit/Delete{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
