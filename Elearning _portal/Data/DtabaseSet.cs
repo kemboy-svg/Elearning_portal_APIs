@@ -18,13 +18,15 @@ namespace Elearning__portal.Data
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Lecturer> Lecturers { get; set; }
+        public DbSet<Lecturer> Lecturer { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Student> Students { get; set; }
 
         public new DbSet<IdentityRole> Roles { get; set; }
 
-        public DbSet<Uploads> Notes { get; set; }
+        public DbSet<Notes> Notes { get; set; }
+
+        public DbSet<Assignment> Assignments { get; set; }
 
         
     }

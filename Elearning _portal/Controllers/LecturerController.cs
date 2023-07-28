@@ -68,7 +68,7 @@ namespace Elearning__portal.Controllers
                         assigned_unit = model.assigned_unit
                     };
 
-                    await _dtabaseSet.Lecturers.AddAsync(newL);
+                    await _dtabaseSet.Lecturer.AddAsync(newL);
                     await _dtabaseSet.SaveChangesAsync();
                     await CreateRolesIfNotExists("Lecturer");
                     await _userManager.AddToRoleAsync(user, "Lecturer");
@@ -93,7 +93,7 @@ namespace Elearning__portal.Controllers
         {
             try
              {
-                var lecturer = await _dtabaseSet.Lecturers.FindAsync(id);
+                var lecturer = await _dtabaseSet.Lecturer.FindAsync(id);
 
                 if (lecturer == null)
                 {
@@ -104,7 +104,7 @@ namespace Elearning__portal.Controllers
                 lecturer.Email  = model.Email;
                 lecturer.assigned_unit = model.assigned_unit;
 
-                _dtabaseSet.Lecturers.Update(lecturer);
+                _dtabaseSet.Lecturer.Update(lecturer);
                 await _dtabaseSet.SaveChangesAsync();
 
                 return StatusCode(200, "Lecturer updated successfully");
@@ -120,14 +120,14 @@ namespace Elearning__portal.Controllers
         {
             try
             {
-                var lecturer = await _dtabaseSet.Lecturers.FindAsync(Id);
+                var lecturer = await _dtabaseSet.Lecturer.FindAsync(Id);
 
                 if (lecturer == null)
                 {
                     return NotFound("Lecturer not found");
                 }
 
-                _dtabaseSet.Lecturers.Remove(lecturer);
+                _dtabaseSet.Lecturer.Remove(lecturer);
                 await _dtabaseSet.SaveChangesAsync();
 
                 return StatusCode(200, "Lecturer deleted successfully");
@@ -144,7 +144,7 @@ namespace Elearning__portal.Controllers
 
         public async Task<IActionResult> Lecturers()
         {
-           var users = await _dtabaseSet.Lecturers.ToListAsync();
+           var users = await _dtabaseSet.Lecturer.ToListAsync();
             return Ok(users);
         }
 
@@ -154,7 +154,7 @@ namespace Elearning__portal.Controllers
         [HttpPost]
         [Route("api/UploadNotes")]
 
-        public async Task<IActionResult> UploadNotes(IFormFile file, [FromForm] string description)
+        public async Task<IActionResult> UploadNotes(IFormFile file, [FromForm] string description, string week)
         {
             if (file == null|| file.Length==0)
             {
@@ -171,18 +171,84 @@ namespace Elearning__portal.Controllers
             {
                 await file.CopyToAsync(stream);
             }
-            var fileDescription = new Uploads
+            var fileDescription = new Notes
             {
                
                 FileName = fileName,
-                Description = description
+                Description = description,
+                Week= week
+
             };
             _dtabaseSet.Notes.Add(fileDescription);
             await _dtabaseSet.SaveChangesAsync();
-            return StatusCode(200, "Notes uploaded successfully");
+            return Ok("Notes uploaded successfully");
             
             
         }
+
+        [HttpPost]
+        [Route("api/upload/Assignments")]
+
+        public async Task<IActionResult> UploadAssignments (IFormFile file, [FromForm] Assignment model)
+        {
+           
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No file selected");
+                }
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "AssignmentUploads");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var FileName = Path.GetFileName(file.FileName);
+                var FilePath = Path.Combine(uploadsFolder, FileName);
+
+                using (var stream = new FileStream(FilePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                var collection = new Assignment
+                {
+                    FileName = FileName,
+                    Instruction = model.Instruction,
+                    Week = model.Week,
+                    DueDate = model.DueDate,
+
+                };
+                _dtabaseSet.Assignments.Add(collection);
+                await _dtabaseSet.SaveChangesAsync();
+
+                return StatusCode(200, "Assignment uploaded successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred uploading the assignment: " + ex.Message);
+            }
+           
+        }
+
+        [HttpGet]
+        [Route("/api/DownloadFile")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public IActionResult DownloadFile(string fileName)
+        {
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "UnitNotes"); 
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            if (!System.IO.File.Exists(filePath))
+
+                return NotFound("File not found.");
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+            //return File(fileBytes, "application/octet-stream", fileName);
+            return Ok(File(fileBytes, "application/octet-stream", fileName));
+             //return Ok(filePath);
+            
+        }
+
+
         [HttpGet]
         [Route("api/viewNotes")]
 
@@ -191,6 +257,39 @@ namespace Elearning__portal.Controllers
             var notes=await _dtabaseSet.Notes.ToListAsync();
 
             return Ok(notes);
+        }
+
+        [HttpGet]
+        [Route("api/viewAssignments")]
+
+        public async Task<IActionResult> Assignments()
+        {
+            var notes = await _dtabaseSet.Assignments.ToListAsync();
+
+            return Ok(notes);
+        }
+
+        [HttpDelete]
+        [Route("api/Delete/Assignment/{id}")]
+
+        public async Task<IActionResult> DeleteAssignment(int id)
+        {
+            try
+            {
+                var assignment = await  _dtabaseSet.Assignments.FindAsync(id);
+                if (assignment == null){
+                    return NotFound("Assignment not found");
+                }
+
+                _dtabaseSet.Assignments.Remove(assignment);
+                await _dtabaseSet.SaveChangesAsync();
+                return Ok("Assignment removed successfully");
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error while deleting the assignment"+ ex.Message);
+            }
         }
     }
 }
