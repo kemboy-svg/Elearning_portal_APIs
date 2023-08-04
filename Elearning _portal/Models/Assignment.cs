@@ -10,7 +10,7 @@ namespace Elearning__portal.Models
     { 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FileName { get; set; }
         public string Instruction { get; set; }
 
@@ -18,6 +18,11 @@ namespace Elearning__portal.Models
         public  DateTime DueDate { get; set; }
         
         public DateTime CreateAt { get; set; }
+
+        public Guid UnitId { get; set; }
+        public virtual Unit Unit { get; set; }
+       
+
 
         public Assignment()
         {

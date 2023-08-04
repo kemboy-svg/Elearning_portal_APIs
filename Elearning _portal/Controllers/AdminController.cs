@@ -4,37 +4,53 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Elearning__portal.Models;
 
-[ApiController]
-[Route("api/Login")]
-public class AdminController : Controller
+namespace Elearning__portal.Controllers
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+    [ApiController]
+    [Route("api/Admin/Login")]
+    public class AdminController : ControllerBase
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
-    }
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    [HttpPost]
-    public async Task<IActionResult> Login(LoginDTO model)
-    {
-        var user = await _userManager.FindByEmailAsync(model.Email);
-
-        if (user == null)
+        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
-            return NotFound("User not found");
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-
-        if (result.Succeeded)
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginDTO model)
         {
-            // Authentication successful 
-            return StatusCode(200, "Logged in successfully");
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                // Authentication successful 
+                return StatusCode(200, "Logged in successfully");
+            }
+
+            return Unauthorized("Invalid login attempt");
         }
 
-        return Unauthorized("Invalid login attempt");
+        [HttpGet]
+        [Route("GetAdminByEmail")]
+
+        public async Task<IActionResult> GetAdmin(string email)
+        {
+            var admin = await _userManager.FindByEmailAsync(email);
+            if (admin == null)
+            {
+                return NotFound("User not found");
+            }
+            return Ok(admin);
+        }
     }
 }

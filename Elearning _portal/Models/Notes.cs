@@ -7,12 +7,15 @@ namespace Elearning__portal.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FileName { get; set;}
         public string Description { get; set;}
         public string Week { get; set;}
 
         public DateTime CreatedAt { get; set;}
+
+        public virtual Unit Unit { get; set; }
+        public Guid UnitId { get; set; }
 
         public Notes() 
         { 

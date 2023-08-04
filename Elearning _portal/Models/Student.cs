@@ -11,5 +11,8 @@ namespace Elearning__portal.Models
         public string fullName { get; set; }
         public int Age { get; set; }
 
+        public virtual Unit unit  { get; set; }
+        public Guid UnitId { get; set; }  
+
     }
 }

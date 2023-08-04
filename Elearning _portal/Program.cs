@@ -97,6 +97,7 @@ static async Task SeedAdminUserAndRole(WebApplication app)
             {
                 UserName = "admin@admin.com",
                 Email = "admin@admin.com",
+                fullName="admin"
                 
             };
 

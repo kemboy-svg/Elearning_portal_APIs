@@ -22,9 +22,10 @@ namespace Elearning__portal.Controllers
             {
                 var unit = new Unit
                 {
-                    Id = model.Id,
+                   
                     unit_code = model.unit_code,
-                    unit_name = model.unit_name
+                    unit_name = model.unit_name,
+                   
                 };
                 await _dtabaseSet.Units.AddAsync(unit);
                 await _dtabaseSet.SaveChangesAsync();
@@ -40,11 +41,11 @@ namespace Elearning__portal.Controllers
 
         [HttpPut]
         [Route("api/Unit{id}")]
-        public async Task<IActionResult> Update( [FromBody] Unit model, int id )
+        public async Task<IActionResult> Update( [FromBody] Unit model, Guid Id )
         {
             try
             {
-                var unit = await _dtabaseSet.Units.FindAsync(id);
+                var unit = await _dtabaseSet.Units.FindAsync(Id);
 
                 if (unit == null)
                 {
@@ -55,7 +56,8 @@ namespace Elearning__portal.Controllers
                 unit.unit_code = model.unit_code;
                 unit.unit_name = model.unit_name;
 
-                _dtabaseSet.Units.Update(unit);
+                _dtabaseSet.Entry(unit).State = EntityState.Modified;
+                //_dtabaseSet.Units.Update(unit);
                 await _dtabaseSet.SaveChangesAsync();
 
                 return StatusCode(200, "Updated successfully");
@@ -68,7 +70,7 @@ namespace Elearning__portal.Controllers
 
         [HttpDelete]
         [Route("api/Unit/Delete{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
