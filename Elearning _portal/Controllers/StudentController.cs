@@ -4,6 +4,8 @@ using Elearning__portal.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Elearning__portal.Controllers
 {
@@ -107,11 +109,11 @@ namespace Elearning__portal.Controllers
 
         [HttpPut]
         [Route("api/Student/update{id}")]
-        public async Task<IActionResult> UpdateStudent([FromBody] RegisterDTO model, int id )
+        public async Task<IActionResult> UpdateStudent([FromBody] RegisterDTO model, Guid Id )
         {
             try
             {
-                var student = await _dtabaseSet.Students.FindAsync(id);
+                var student = await _dtabaseSet.Students.FindAsync(Id);
 
                 if (student == null)
                 {
@@ -189,7 +191,7 @@ namespace Elearning__portal.Controllers
                 return NotFound();
             }
 
-            // Create a new Enrollment
+            // create request for enrollment
             var studentUnit = new Enrollment
             {
                 StudentId = request.StudentId,
@@ -197,11 +199,42 @@ namespace Elearning__portal.Controllers
                 IsApproved = false
             };
 
-            // Add to the database and save
+            
             _dtabaseSet.Enrollments.Add(studentUnit);
             await _dtabaseSet.SaveChangesAsync();
 
             return Ok("Enrollment request submitted and awaiting approval");
+        }
+
+        [HttpGet]
+        [Route("GetAdminByStudent")]
+
+        public async Task<IActionResult> GetStudent(string email)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+                var student = await _dtabaseSet.Students
+                .Include(e => e.Enrollments)
+                .ThenInclude(e => e.Unit)
+                .FirstOrDefaultAsync(l => l.Email == email);
+
+                if (student == null)
+                {
+                    return NotFound("Lecturer not found");
+                }
+                var serializedLecturer = JsonSerializer.Serialize(student, options);
+
+                return Ok(serializedLecturer);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the lecturer details: " + ex.Message);
+            }
         }
 
     }

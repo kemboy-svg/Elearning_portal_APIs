@@ -174,16 +174,16 @@ namespace Elearning__portal.Controllers
                 .FirstOrDefaultAsync(l => l.Email == email);
 
                 if (lecturer == null)
-            {
+              {
                 return NotFound("Lecturer not found");
-            }
+              }
                 var serializedLecturer = JsonSerializer.Serialize(lecturer, options);
 
                 return Ok(serializedLecturer);
 
-        }
+             }
             catch (Exception ex)
-        {
+            {
                 return StatusCode(500, "An error occurred while fetching the lecturer details: " + ex.Message);
             }
 
@@ -397,8 +397,8 @@ namespace Elearning__portal.Controllers
         [Route("api/ApproveStudent/{enrollmentId}")]
         public async Task<IActionResult> ApproveEnrollment(Guid enrollmentId)
         {
-            // Find the StudentUnit
-                   
+            
+              
            var enrollment = await _dtabaseSet.Enrollments.FindAsync(enrollmentId);
 
             if (enrollment == null)
@@ -406,15 +406,18 @@ namespace Elearning__portal.Controllers
                  return NotFound("Enrollment not found");
                  }
 
-            // Set IsApproved to true and save
+            //Approve the request here
             enrollment.IsApproved = true;
             await _dtabaseSet.SaveChangesAsync();
 
 
-            // Return the student details
+            // check on how to return the student details here
             return Ok("Enrollment approved and student details updated");
         }
 
+
+        //Api to remove enrollment reuest whether approved
+        //Rejects the request 
         [HttpDelete]
         [Route("api/RemoveEnrollment/{enrollmentId}")]
         public async Task<IActionResult> RemoveEnrollment(Guid enrollmentId)
