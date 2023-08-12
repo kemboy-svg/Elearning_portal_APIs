@@ -9,4 +9,5 @@ public class LoginDTO
     [Required]
     [DataType(DataType.Password)]
     public string Password { get; set; }
+   
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Elias\\NET\\Elearning _portal\\Elearning _portal\\Elearning _portal.csproj": {}
+    "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Elias\\NET\\Elearning _portal\\Elearning _portal\\Elearning _portal.csproj": {
+    "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Elias\\NET\\Elearning _portal\\Elearning _portal\\Elearning _portal.csproj",
+        "projectUniqueName": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj",
         "projectName": "Elearning _portal",
-        "projectPath": "C:\\Users\\Elias\\NET\\Elearning _portal\\Elearning _portal\\Elearning _portal.csproj",
+        "projectPath": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj",
         "packagesPath": "C:\\Users\\Elias\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Elias\\NET\\Elearning _portal\\Elearning _portal\\obj\\",
+        "outputPath": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Elias\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -79,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

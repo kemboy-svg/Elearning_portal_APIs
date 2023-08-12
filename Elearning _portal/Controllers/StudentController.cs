@@ -13,12 +13,17 @@ namespace Elearning__portal.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DtabaseSet _dtabaseSet;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public StudentController(UserManager<Models.ApplicationUser> userManager, DtabaseSet dtabaseSet,RoleManager<IdentityRole> roleManager)
+        public StudentController(UserManager<Models.ApplicationUser> userManager, 
+            DtabaseSet dtabaseSet,
+            RoleManager<IdentityRole> roleManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _dtabaseSet = dtabaseSet;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         private async Task CreateRolesIfNotExists(params string[] roleNames)
@@ -34,7 +39,27 @@ namespace Elearning__portal.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("api/StudentLogin")]
+        public async Task<IActionResult> LecturerLogin([FromBody] LoginDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                // Authentication successful 
+                return StatusCode(200, "Logged in successfully");
+            }
+
+            return Unauthorized("Invalid login attempt");
+        }
 
         [HttpPost]
         [Route("api/StudentRegister")]
@@ -54,7 +79,7 @@ namespace Elearning__portal.Controllers
                 {
                     var newS = new Student
                     {
-                        Id = model.Id,
+                        Id = Guid.NewGuid(),
                         Reg_no = model.Reg_no,
                         fullName = model.fullName,
                         Email = model.Email,
@@ -148,6 +173,35 @@ namespace Elearning__portal.Controllers
             var notes = await _dtabaseSet.Notes.ToListAsync();
 
             return Ok(notes);
+        }
+
+
+        [HttpPost]
+        [Route("api/UnitEnrollment")]
+        public async Task<IActionResult> RequestEnrollment([FromBody] EnrollmentRequestDTO request)
+        {
+
+
+            var unit = await _dtabaseSet.Units.FirstOrDefaultAsync(u => u.unit_name == request.UnitName);
+
+            if ( unit == null)
+            {
+                return NotFound();
+            }
+
+            // Create a new Enrollment
+            var studentUnit = new Enrollment
+            {
+                StudentId = request.StudentId,
+                UnitId = unit.Id,
+                IsApproved = false
+            };
+
+            // Add to the database and save
+            _dtabaseSet.Enrollments.Add(studentUnit);
+            await _dtabaseSet.SaveChangesAsync();
+
+            return Ok("Enrollment request submitted and awaiting approval");
         }
 
     }

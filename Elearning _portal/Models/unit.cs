@@ -13,8 +13,7 @@ namespace Elearning__portal.Models
         public string unit_name { get; set; }
 
 
-       
-        public ICollection<Student> Students { get; set; }
+        public ICollection<Enrollment> Enrollments { get; set; }
 
         public ICollection<Notes> Notes { get; set; }
         public ICollection<Assignment> Assignments { get; set; }

@@ -124,6 +124,30 @@ namespace Elearning__portal.Migrations
                     b.ToTable("Assignments");
                 });
 
+            modelBuilder.Entity("Elearning__portal.Models.Enrollment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UnitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("Enrollments");
+                });
+
             modelBuilder.Entity("Elearning__portal.Models.Lecturer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -185,11 +209,9 @@ namespace Elearning__portal.Migrations
 
             modelBuilder.Entity("Elearning__portal.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
@@ -206,16 +228,11 @@ namespace Elearning__portal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UnitId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("fullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("Students");
                 });
@@ -382,6 +399,25 @@ namespace Elearning__portal.Migrations
                     b.Navigation("Unit");
                 });
 
+            modelBuilder.Entity("Elearning__portal.Models.Enrollment", b =>
+                {
+                    b.HasOne("Elearning__portal.Models.Student", "Student")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Elearning__portal.Models.Unit", "Unit")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Unit");
+                });
+
             modelBuilder.Entity("Elearning__portal.Models.Lecturer", b =>
                 {
                     b.HasOne("Elearning__portal.Models.Unit", "Unit")
@@ -402,17 +438,6 @@ namespace Elearning__portal.Migrations
                         .IsRequired();
 
                     b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("Elearning__portal.Models.Student", b =>
-                {
-                    b.HasOne("Elearning__portal.Models.Unit", "unit")
-                        .WithMany("Students")
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("unit");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -466,13 +491,18 @@ namespace Elearning__portal.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Elearning__portal.Models.Student", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
             modelBuilder.Entity("Elearning__portal.Models.Unit", b =>
                 {
                     b.Navigation("Assignments");
 
-                    b.Navigation("Notes");
+                    b.Navigation("Enrollments");
 
-                    b.Navigation("Students");
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

@@ -30,9 +30,7 @@ namespace Elearning__portal.Controllers
             
             
         }
-        //  public LecturerController()
-        // {
-        // }
+        
 
         private async Task CreateRolesIfNotExists(params string[] roleNames)
         {
@@ -41,11 +39,13 @@ namespace Elearning__portal.Controllers
                 var roleExist = await _roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    // create the roles and seed them to the database
+                    
                     await _roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
         }
+
+
 
         [HttpPost]
         [Route("api/LecturerLogin")]
@@ -69,7 +69,10 @@ namespace Elearning__portal.Controllers
             return Unauthorized("Invalid login attempt");
         }
 
-        [HttpPost]
+
+
+
+            [HttpPost]
         [Route("api/Register")]
         public async Task<IActionResult> Add([FromBody] RegisterDTO model)
         {
@@ -165,7 +168,7 @@ namespace Elearning__portal.Controllers
                 };
                 var lecturer = await _dtabaseSet.Lecturers
                 .Include(l => l.Unit)
-                .ThenInclude(u => u.Notes) // Eagerly load associated notes
+                .ThenInclude(u => u.Notes) 
                 .Include(l => l.Unit)
                 .ThenInclude(u => u.Assignments)
                 .FirstOrDefaultAsync(l => l.Email == email);
@@ -222,7 +225,7 @@ namespace Elearning__portal.Controllers
         }
 
 
-
+        
 
         [HttpPost]
         [Route("api/UploadNotes")]
@@ -388,5 +391,46 @@ namespace Elearning__portal.Controllers
                 return StatusCode(500, "Error while deleting the assignment"+ ex.Message);
             }
         }
+
+
+        [HttpPut]
+        [Route("api/ApproveStudent/{enrollmentId}")]
+        public async Task<IActionResult> ApproveEnrollment(Guid enrollmentId)
+        {
+            // Find the StudentUnit
+                   
+           var enrollment = await _dtabaseSet.Enrollments.FindAsync(enrollmentId);
+
+            if (enrollment == null)
+                {
+                 return NotFound("Enrollment not found");
+                 }
+
+            // Set IsApproved to true and save
+            enrollment.IsApproved = true;
+            await _dtabaseSet.SaveChangesAsync();
+
+
+            // Return the student details
+            return Ok("Enrollment approved and student details updated");
+        }
+
+        [HttpDelete]
+        [Route("api/RemoveEnrollment/{enrollmentId}")]
+        public async Task<IActionResult> RemoveEnrollment(Guid enrollmentId)
+        {
+            var enrollment = await _dtabaseSet.Enrollments.FindAsync(enrollmentId);
+
+            if (enrollment == null)
+            {
+                return NotFound("Enrollment not found");
+            }
+
+            _dtabaseSet.Enrollments.Remove(enrollment);
+            await _dtabaseSet.SaveChangesAsync();
+
+            return Ok("Enrollment removed");
+        }
+
     }
 }

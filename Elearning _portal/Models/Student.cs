@@ -4,15 +4,14 @@ namespace Elearning__portal.Models
 {
     public class Student
     {
-        public  int Id { get; set; }
+        public  Guid Id { get; set; }
         public string Reg_no { get; set; }
         public string Email { get; set; }
         public string Course  { get; set; }
         public string fullName { get; set; }
         public int Age { get; set; }
 
-        public virtual Unit unit  { get; set; }
-        public Guid UnitId { get; set; }  
+        public ICollection<Enrollment> Enrollments { get; set; }
 
     }
 }

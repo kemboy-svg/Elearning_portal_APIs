@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZGG4xL5bxFSHYH61YrWU8U8CYPoXAfmiMhzG6m+RtraMrF4M8mSutZ5rs1eNLqDda9ZGbVAVb/hCzljMqRQNrA==",
+  "dgSpecHash": "RA9tTOU3GsgJLXZTQzuN2Sw3bNRf7QLJvwqR81lp+Q8tFwk4SlKilRloounBlRPrKOsi7TLB3OGdQBf9zpgv0Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Elias\\NET\\Elearning _portal\\Elearning _portal\\Elearning _portal.csproj",
+  "projectFilePath": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Elias\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Elias\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

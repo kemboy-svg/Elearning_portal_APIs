@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Elearning__portal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Elearning__portal.Controllers
 {
@@ -18,7 +19,7 @@ namespace Elearning__portal.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
         }
-
+       
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
         {
