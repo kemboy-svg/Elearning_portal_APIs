@@ -231,27 +231,25 @@ namespace Elearning__portal.Controllers
                     return NotFound("Student not found");
                 }
 
-                var enrollment = student.Enrollments.FirstOrDefault(); // Assuming there's only one enrollment
+               student.Enrollments = student.Enrollments.Where(e => e.IsApproved).ToList(); // Only approved enrollments
 
-                if (enrollment != null)
-                {
-                    if (!enrollment.IsApproved)
-                    {
-                        // If enrollment is false, exclude Assignments and Notes
-                        enrollment.Unit.Assignments = null;
-                        enrollment.Unit.Notes = null;
-                    }
-                }
-
-                var serializedStudent = JsonSerializer.Serialize(student, options);
-
-                return Ok(serializedStudent);
-            }
-            catch (Exception ex)
+        foreach (var enrollment in student.Enrollments)
+        {
+            if (!enrollment.IsApproved)
             {
-                return StatusCode(500, "An error occurred while fetching the student details: " + ex.Message);
+                enrollment.Unit = null;
             }
         }
+
+        var serializedStudent = JsonSerializer.Serialize(student, options);
+
+        return Ok(serializedStudent);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "An error occurred while fetching the student details: " + ex.Message);
+    }
+}
 
     }
 }

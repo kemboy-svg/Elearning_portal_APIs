@@ -416,6 +416,74 @@ namespace Elearning__portal.Controllers
         }
 
 
+        [HttpGet]
+        [Route("GetStudentsWithPendingEnrollments")]
+        public async Task<IActionResult> GetStudentsWithPendingEnrollments()
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+
+                var studentsWithPendingEnrollments = await _dtabaseSet.Students
+                    .Include(e => e.Enrollments)
+                     .ThenInclude(e => e.Unit)
+                    .Where(s => s.Enrollments.Any(e => !e.IsApproved)) // Filter students with non-approved enrollments
+                    .ToListAsync();
+
+                foreach (var student in studentsWithPendingEnrollments)
+                {
+                    student.Enrollments = student.Enrollments.Where(e => !e.IsApproved).ToList(); // Only non-approved enrollments
+                   
+                }
+
+                var serializedStudents = JsonSerializer.Serialize(studentsWithPendingEnrollments, options);
+
+                return Ok(serializedStudents);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the students' details: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetStudentsWithAprovedEnrollments")]
+        public async Task<IActionResult> GetStudentsWithApprovedEnrollments()
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+
+                var studentsWithApprovedEnrollments = await _dtabaseSet.Students
+                    .Include(e => e.Enrollments)
+                     .ThenInclude(e => e.Unit)
+                    .Where(s => s.Enrollments.Any(e => e.IsApproved)) // Filter students with approved enrollments
+                    .ToListAsync();
+
+                foreach (var student in studentsWithApprovedEnrollments)
+                {
+                    student.Enrollments = student.Enrollments.Where(e => e.IsApproved).ToList(); // Only approved enrollments
+                    
+                }
+
+                var serializedStudents = JsonSerializer.Serialize(studentsWithApprovedEnrollments, options);
+
+                return Ok(serializedStudents);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the students' details: " + ex.Message);
+            }
+        }
+
+
+
         //Api to remove enrollment reuest whether approved
         //Rejects the request 
         [HttpDelete]
