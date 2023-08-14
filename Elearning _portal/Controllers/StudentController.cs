@@ -207,8 +207,7 @@ namespace Elearning__portal.Controllers
         }
 
         [HttpGet]
-        [Route("GetAdminByStudent")]
-
+        [Route("GetStudentByEmail")]
         public async Task<IActionResult> GetStudent(string email)
         {
             try
@@ -217,23 +216,40 @@ namespace Elearning__portal.Controllers
                 {
                     ReferenceHandler = ReferenceHandler.Preserve
                 };
+
                 var student = await _dtabaseSet.Students
-                .Include(e => e.Enrollments)
-                .ThenInclude(e => e.Unit)
-                .FirstOrDefaultAsync(l => l.Email == email);
+                    .Include(e => e.Enrollments)
+                    .ThenInclude(e => e.Unit)
+                        .ThenInclude(n => n.Assignments)
+                    .Include(e => e.Enrollments)
+                    .ThenInclude(e => e.Unit)
+                        .ThenInclude(n => n.Notes)
+                    .FirstOrDefaultAsync(l => l.Email == email);
 
                 if (student == null)
                 {
-                    return NotFound("Lecturer not found");
+                    return NotFound("Student not found");
                 }
-                var serializedLecturer = JsonSerializer.Serialize(student, options);
 
-                return Ok(serializedLecturer);
+                var enrollment = student.Enrollments.FirstOrDefault(); // Assuming there's only one enrollment
 
+                if (enrollment != null)
+                {
+                    if (!enrollment.IsApproved)
+                    {
+                        // If enrollment is false, exclude Assignments and Notes
+                        enrollment.Unit.Assignments = null;
+                        enrollment.Unit.Notes = null;
+                    }
+                }
+
+                var serializedStudent = JsonSerializer.Serialize(student, options);
+
+                return Ok(serializedStudent);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while fetching the lecturer details: " + ex.Message);
+                return StatusCode(500, "An error occurred while fetching the student details: " + ex.Message);
             }
         }
 

@@ -3896,19 +3896,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Elias\\.nuget\\packages\\": {}
+    "C:\\Users\\emman\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj",
+      "projectUniqueName": "C:\\Users\\emman\\NET\\Elearning _portal\\Elearning _portal.csproj",
       "projectName": "Elearning _portal",
-      "projectPath": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\Elearning _portal.csproj",
-      "packagesPath": "C:\\Users\\Elias\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Elias\\NET\\Elearning_portal_APIs\\Elearning _portal\\obj\\",
+      "projectPath": "C:\\Users\\emman\\NET\\Elearning _portal\\Elearning _portal.csproj",
+      "packagesPath": "C:\\Users\\emman\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\emman\\NET\\Elearning _portal\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Elias\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\emman\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
