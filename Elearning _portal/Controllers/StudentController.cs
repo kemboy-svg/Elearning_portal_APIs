@@ -182,16 +182,23 @@ namespace Elearning__portal.Controllers
         [Route("api/UnitEnrollment")]
         public async Task<IActionResult> RequestEnrollment([FromBody] EnrollmentRequestDTO request)
         {
+            
+            var existingEnrollment = await _dtabaseSet.Enrollments
+                .FirstOrDefaultAsync(e => e.StudentId == request.StudentId && e.Unit.unit_name == request.UnitName);
 
+            if (existingEnrollment != null)
+            {
+                return BadRequest("Student is already enrolled in this unit.");
+            }
 
             var unit = await _dtabaseSet.Units.FirstOrDefaultAsync(u => u.unit_name == request.UnitName);
 
-            if ( unit == null)
+            if (unit == null)
             {
                 return NotFound();
             }
 
-            // create request for enrollment
+           
             var studentUnit = new Enrollment
             {
                 StudentId = request.StudentId,
@@ -199,12 +206,12 @@ namespace Elearning__portal.Controllers
                 IsApproved = false
             };
 
-            
             _dtabaseSet.Enrollments.Add(studentUnit);
             await _dtabaseSet.SaveChangesAsync();
 
             return Ok("Enrollment request submitted and awaiting approval");
         }
+
 
         [HttpGet]
         [Route("GetStudentByEmail")]

@@ -422,64 +422,69 @@ namespace Elearning__portal.Controllers
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve
-                };
-
-                var studentsWithPendingEnrollments = await _dtabaseSet.Students
-                    .Include(e => e.Enrollments)
-                     .ThenInclude(e => e.Unit)
-                    .Where(s => s.Enrollments.Any(e => !e.IsApproved)) // Filter students with non-approved enrollments
+                var notApprovedEnrollments = await _dtabaseSet.Enrollments
+                    .Include(e => e.Unit)
+                    .Where(e => !e.IsApproved)
+                    .Include(e => e.Student)
                     .ToListAsync();
 
-                foreach (var student in studentsWithPendingEnrollments)
+                var result = notApprovedEnrollments.Select(enrollment => new
                 {
-                    student.Enrollments = student.Enrollments.Where(e => !e.IsApproved).ToList(); // Only non-approved enrollments
-                   
-                }
+                    EnrollmentId = enrollment.Id,
+                    StudentId = enrollment.Student.Id,
+                    StudentName = enrollment.Student.fullName,
+                    UnitId = enrollment.Unit.Id,
+                    Reg_no = enrollment.Student.Reg_no,
+                    email=enrollment.Student.Email,
+                    UnitName = enrollment.Unit.unit_name,
+                    IsApproved = enrollment.IsApproved
+                });
 
-                var serializedStudents = JsonSerializer.Serialize(studentsWithPendingEnrollments, options);
-
-                return Ok(serializedStudents);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while fetching the students' details: " + ex.Message);
+                // Handle exceptions and return appropriate error response
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request."+ex.Message);
             }
         }
 
+
+
+
         [HttpGet]
         [Route("GetStudentsWithAprovedEnrollments")]
-        public async Task<IActionResult> GetStudentsWithApprovedEnrollments()
+        public async Task<IActionResult> ApprovedStudents()
         {
             try
             {
-                var options = new JsonSerializerOptions
+                var approvedEnrollments = await _dtabaseSet.Enrollments
+                .Include(e => e.Unit)
+                .Where(e => e.IsApproved)
+                .Include(e => e.Student)
+                .ToListAsync();
+
+                var result = approvedEnrollments.Select(enrollment => new
                 {
-                    ReferenceHandler = ReferenceHandler.Preserve
-                };
+                    EnrollmentId = enrollment.Id,
+                    StudentId = enrollment.Student.Id,
+                    StudentName = enrollment.Student.fullName,
+                    UnitId = enrollment.Unit.Id,
+                    Reg_no = enrollment.Student.Reg_no,
+                    email = enrollment.Student.Email,
+                    UnitName = enrollment.Unit.unit_name,
+                    IsApproved = enrollment.IsApproved
+                });
 
-                var studentsWithApprovedEnrollments = await _dtabaseSet.Students
-                    .Include(e => e.Enrollments)
-                     .ThenInclude(e => e.Unit)
-                    .Where(s => s.Enrollments.Any(e => e.IsApproved)) // Filter students with approved enrollments
-                    .ToListAsync();
+                return Ok(result);
 
-                foreach (var student in studentsWithApprovedEnrollments)
-                {
-                    student.Enrollments = student.Enrollments.Where(e => e.IsApproved).ToList(); // Only approved enrollments
-                    
-                }
-
-                var serializedStudents = JsonSerializer.Serialize(studentsWithApprovedEnrollments, options);
-
-                return Ok(serializedStudents);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while fetching the students' details: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request." + ex.Message);
+
             }
+            
         }
 
 

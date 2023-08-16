@@ -9,10 +9,10 @@ namespace Elearning__portal.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }
-        public Student Student { get; set; }
+        public virtual Student Student { get; set; }
 
-        public Guid UnitId { get; set; }
-        public Unit Unit { get; set; }
+        public Guid UnitId { get; set; } 
+        public virtual Unit Unit { get; set; }
 
         public bool IsApproved { get; set; }
     }
