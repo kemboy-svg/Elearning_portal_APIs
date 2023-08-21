@@ -508,5 +508,36 @@ namespace Elearning__portal.Controllers
             return Ok("Enrollment removed");
         }
 
+
+        [HttpPost]
+        [Route("post/Announcements")]
+
+        public async Task<IActionResult> PostAnnouncements(Guid lecturerId, Announcements model)
+        {
+            try
+            {
+                var lecturer = await _dtabaseSet.Lecturers.FindAsync(lecturerId);
+                if (lecturer== null)
+                {
+                    return BadRequest("Sender unable to complete the request");
+                }
+
+                var message = new Announcements
+                {
+                    Message = model.Message,
+                    LecturerId= lecturerId
+
+                };
+                _dtabaseSet.Announcements.Add(message);
+                await _dtabaseSet.SaveChangesAsync();
+                return Ok("Announcent sent successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "An error occurred while sending the message" + ex.Message);
+            }
+        }
+
     }
 }

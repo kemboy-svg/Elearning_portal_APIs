@@ -214,6 +214,16 @@ namespace Elearning__portal.Controllers
 
 
         [HttpGet]
+        [Route("view/Announcements")]
+
+        public async Task<IActionResult> ViewAnnouncements()
+        {
+            var message=await _dtabaseSet.Announcements.ToListAsync();
+            return Ok(message);
+        }
+
+
+        [HttpGet]
         [Route("GetStudentByEmail")]
         public async Task<IActionResult> GetStudent(string email)
         {
@@ -240,13 +250,13 @@ namespace Elearning__portal.Controllers
 
                student.Enrollments = student.Enrollments.Where(e => e.IsApproved).ToList(); // Only approved enrollments
 
-        foreach (var enrollment in student.Enrollments)
-        {
-            if (!enrollment.IsApproved)
-            {
+             foreach (var enrollment in student.Enrollments)
+             {
+              if (!enrollment.IsApproved)
+             {
                 enrollment.Unit = null;
             }
-        }
+          }
 
         var serializedStudent = JsonSerializer.Serialize(student, options);
 
@@ -257,6 +267,7 @@ namespace Elearning__portal.Controllers
         return StatusCode(500, "An error occurred while fetching the student details: " + ex.Message);
     }
 }
+
 
     }
 }
