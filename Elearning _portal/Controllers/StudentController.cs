@@ -4,8 +4,10 @@ using Elearning__portal.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using System.Net.Mime;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using static Azure.Core.HttpHeader;
 
 namespace Elearning__portal.Controllers
 {
@@ -267,6 +269,77 @@ namespace Elearning__portal.Controllers
         return StatusCode(500, "An error occurred while fetching the student details: " + ex.Message);
     }
 }
+
+        [HttpGet] 
+        [Route("api/viewAssignmentsAndNotesByUnitId")]
+        public async Task<IActionResult> AssignmentsAndNotes(Guid unitId, string week)
+        {
+            // Check if week parameter is provided
+            if (string.IsNullOrEmpty(week))
+            {
+                return BadRequest("Week parameter is required.");
+            }
+
+            var assignments = await _dtabaseSet.Assignments
+                .Where(a => a.UnitId == unitId && (a.Week == week || a.Week == null))
+                .Select(assignment => new AssignmentAndNoteDTO
+                {
+                    AssignmentId = assignment.Id,
+                    AssignmentDescription = assignment.Instruction,
+                    AssignmentFileName = assignment.FileName,
+                    AssignmentDueDate = assignment.DueDate,
+                    
+                })
+                .ToListAsync();
+
+            var notes = await _dtabaseSet.Notes
+                .Where(n => n.UnitId == unitId && n.Week == week)
+                .Select(note => new AssignmentAndNoteDTO
+                {
+                   
+                    NoteId = note.Id,
+                    NoteFileName = note.FileName,
+                    NoteDescription = note.Description
+                })
+                .ToListAsync();
+
+            var result = new
+            {
+                Assignments = assignments,
+                Notes = notes
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("/api/DownloadAssignmentFile")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public IActionResult DownloadFile(string fileName)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "AssignmentUploads");
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound("File not found.");
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+            // Set the Content-Disposition header to force the browser to download the file.
+            var contentDisposition = new ContentDisposition
+            {
+                FileName = fileName,
+                Inline = true,  // Set to true if you want the browser to try to open the file directly.
+            };
+            Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
+
+            return File(fileBytes, "application/octet-stream");
+        }
+
+
+
 
 
     }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -332,21 +333,29 @@ namespace Elearning__portal.Controllers
         [HttpGet]
         [Route("/api/DownloadFile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         public IActionResult DownloadFile(string fileName)
         {
-
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "UnitNotes"); 
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "UnitNotes");
             var filePath = Path.Combine(uploadsFolder, fileName);
+
             if (!System.IO.File.Exists(filePath))
-  
                 return NotFound("File not found.");
+
             byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-            //return File(fileBytes, "application/octet-stream", fileName);
-            return Ok(File(fileBytes, "application/octet-stream", fileName));
-             //return Ok(filePath);
-            
+
+            // Set the Content-Disposition header to force the browser to download the file.
+            var contentDisposition = new ContentDisposition
+            {
+                FileName = fileName,
+                Inline = true,  // Set to true if you want the browser to try to open the file directly.
+            };
+            Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
+
+            return File(fileBytes, "application/octet-stream");
         }
+
 
 
         [HttpGet]
