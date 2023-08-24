@@ -54,6 +54,7 @@ namespace Elearning__portal.Data
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Announcements> Announcements { get; set; }
+        public DbSet<AssignmentSubmisions>Submisions { get; set; }
 
 
         

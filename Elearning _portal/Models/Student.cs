@@ -17,5 +17,7 @@ namespace Elearning__portal.Models
 
         public ICollection<Enrollment> Enrollments { get; set; }
 
+        public ICollection<AssignmentSubmisions> Submisions { get; set;}
+
     }
 }

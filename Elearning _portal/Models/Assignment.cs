@@ -22,7 +22,8 @@ namespace Elearning__portal.Models
         public Guid UnitId { get; set; }
         public virtual Unit Unit { get; set; }
        
-
+        
+        public ICollection<AssignmentSubmisions> Submisions { get; set; }
 
         public Assignment()
         {

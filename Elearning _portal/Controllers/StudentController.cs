@@ -150,12 +150,12 @@ namespace Elearning__portal.Controllers
 
         [HttpDelete]
         [Route("api/Delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid Id)
         {
 
             try
             {
-                var student = await _dtabaseSet.Students.FindAsync(id);
+                var student = await _dtabaseSet.Students.FindAsync(Id);
                 if(student == null)
                 {
                     return NotFound("Students not found");
@@ -338,6 +338,46 @@ namespace Elearning__portal.Controllers
             return File(fileBytes, "application/octet-stream");
         }
 
+        [HttpPost]
+        [Route("api/SubmitAssignment")]
+        public async Task<IActionResult> SubmitAssignment(AssignmentSubmisions model, Guid AssignmentId, Guid StudentId)
+        {
+            try
+            {
+               
+                var existingSubmission = await _dtabaseSet.Submisions
+                    .FirstOrDefaultAsync(s => s.AssignmentId == AssignmentId && s.StudentId == StudentId);
+
+                if (existingSubmission != null)
+                {
+                    return BadRequest("You have already submitted this assignment.");
+                }
+
+            
+                var assignment = await _dtabaseSet.Assignments.FindAsync(AssignmentId);
+                if (assignment == null)
+                {
+                    return BadRequest("Assignment does not exist");
+                }
+
+                
+                var submission = new AssignmentSubmisions
+                {
+                    AssignmentId = AssignmentId,
+                    Content = model.Content,
+                    StudentId = StudentId,
+                };
+
+                _dtabaseSet.Submisions.Add(submission);
+                await _dtabaseSet.SaveChangesAsync();
+
+                return Ok("Submitted Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred" + ex.Message);
+            }
+        }
 
 
 

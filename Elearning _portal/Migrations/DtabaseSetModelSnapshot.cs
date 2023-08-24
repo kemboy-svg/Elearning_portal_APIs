@@ -144,6 +144,34 @@ namespace Elearning__portal.Migrations
                     b.ToTable("Assignments");
                 });
 
+            modelBuilder.Entity("Elearning__portal.Models.AssignmentSubmisions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssignmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SubmissionTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Submisions");
+                });
+
             modelBuilder.Entity("Elearning__portal.Models.Enrollment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -430,6 +458,25 @@ namespace Elearning__portal.Migrations
                     b.Navigation("Unit");
                 });
 
+            modelBuilder.Entity("Elearning__portal.Models.AssignmentSubmisions", b =>
+                {
+                    b.HasOne("Elearning__portal.Models.Assignment", "Assignment")
+                        .WithMany("Submisions")
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Elearning__portal.Models.Student", "Student")
+                        .WithMany("Submisions")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Elearning__portal.Models.Enrollment", b =>
                 {
                     b.HasOne("Elearning__portal.Models.Student", "Student")
@@ -522,6 +569,11 @@ namespace Elearning__portal.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Elearning__portal.Models.Assignment", b =>
+                {
+                    b.Navigation("Submisions");
+                });
+
             modelBuilder.Entity("Elearning__portal.Models.Lecturer", b =>
                 {
                     b.Navigation("Announcements");
@@ -530,6 +582,8 @@ namespace Elearning__portal.Migrations
             modelBuilder.Entity("Elearning__portal.Models.Student", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Submisions");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Unit", b =>

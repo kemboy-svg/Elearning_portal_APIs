@@ -548,5 +548,25 @@ namespace Elearning__portal.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/getSubmissionsById")]
+
+        public async Task<IActionResult> GetSubmissions(Guid Id)
+        {
+            try
+            {
+                var submissions = await _dtabaseSet.Submisions.Where
+                    (a=>a.AssignmentId ==Id).ToListAsync();
+              
+                return Ok(submissions);
+            }
+            
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Some error occured"+ ex.Message);
+            }
+        }
+
     }
 }
