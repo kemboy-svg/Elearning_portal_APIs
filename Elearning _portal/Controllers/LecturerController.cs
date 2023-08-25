@@ -73,7 +73,7 @@ namespace Elearning__portal.Controllers
 
 
 
-            [HttpPost]
+        [HttpPost]
         [Route("api/Register")]
         public async Task<IActionResult> Add([FromBody] RegisterDTO model)
         {
@@ -548,23 +548,65 @@ namespace Elearning__portal.Controllers
             }
         }
 
+        //[HttpGet]
+        //[Route("api/getSubmissionsById")]
+
+        //public async Task<IActionResult> GetSubmissions(Guid Id)
+        //{
+        //    try
+        //    {
+        //        var submissionsWithStudents = await _dtabaseSet.Submisions
+        //            .Where(a => a.AssignmentId == Id)
+        //            .Include(a => a.Student) // Include the Student navigation property
+        //            .ToListAsync();
+
+        //        // Group submissions by StudentId
+        //        var groupedSubmissions = submissionsWithStudents.GroupBy(s => s.StudentId);
+
+        //        var result = groupedSubmissions.Select(group =>
+        //        {
+        //            var student = group.First().Student; // Since all submissions have the same student, just take the first one
+
+        //            return new
+        //            {
+        //                StudentId = student.Id,
+        //                StudentName = student.fullName,
+        //                RegNo=student.Reg_no,
+        //                Submissions = group.Select(submission => new
+        //                {
+        //                    SubmissionId = submission.Id,
+        //                    SubmissionDate = submission.SubmissionTime,
+        //                    SubmissionContent=submission.Content
+        //                    // Add other submission properties as needed
+        //                }).ToList()
+        //            };
+        //        }).ToList();
+
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Some error occurred: " + ex.Message);
+        //    }
+        //}
+
         [HttpGet]
         [Route("api/getSubmissionsById")]
 
-        public async Task<IActionResult> GetSubmissions(Guid Id)
+        public async Task<IActionResult>GetSubmissions(Guid Id)
         {
             try
             {
-                var submissions = await _dtabaseSet.Submisions.Where
-                    (a=>a.AssignmentId ==Id).ToListAsync();
-              
+                var submissions = await _dtabaseSet.Submisions
+                    .Where(a => a.AssignmentId == Id)
+                    .Include(a => a.Student) 
+                    .ToListAsync();
                 return Ok(submissions);
             }
-            
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                return StatusCode(500, "Some error occured"+ ex.Message);
+                throw;
             }
         }
 
