@@ -603,12 +603,44 @@ namespace Elearning__portal.Controllers
                     .ToListAsync();
                 return Ok(submissions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return StatusCode(500, "Error while fetching" + ex.Message);
+               
             }
         }
+
+        [HttpPut]
+        [Route("api/updateMarks")]
+        public async Task<IActionResult> UpdateMarks(Guid Id, AssignmentSubmisions model)
+        {
+            try
+            {
+                var submission = await _dtabaseSet.Submisions.FindAsync(Id);
+                if (submission == null)
+                {
+                    return BadRequest("Submission not found");
+                }
+
+                // Update the properties of the existing submission
+                submission.Mark = model.Mark;
+                submission.Remarks = model.Remarks;
+
+                // If you have other properties in the AssignmentSubmisions model that you want to update,
+                // update them here as well.
+
+                // Save the changes to the database
+                await _dtabaseSet.SaveChangesAsync();
+
+                return Ok("Marks updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error while updating: " + ex.Message);
+            }
+        }
+
+
 
     }
 }

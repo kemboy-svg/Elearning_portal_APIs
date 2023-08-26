@@ -7,6 +7,7 @@
 
         public string AssignmentFileName { get; set; }
         public DateTime AssignmentDueDate { get; set; }
+        public string AssignmentWeek { get; set; }
         public Guid NoteId { get; set; }
         public string NoteDescription { get; set; }
         public string NoteFileName { get; set; }

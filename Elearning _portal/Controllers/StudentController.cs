@@ -288,6 +288,7 @@ namespace Elearning__portal.Controllers
                     AssignmentDescription = assignment.Instruction,
                     AssignmentFileName = assignment.FileName,
                     AssignmentDueDate = assignment.DueDate,
+                    AssignmentWeek=assignment.Week
                     
                 })
                 .ToListAsync();
@@ -366,6 +367,9 @@ namespace Elearning__portal.Controllers
                     AssignmentId = AssignmentId,
                     Content = model.Content,
                     StudentId = StudentId,
+                    Week=model.Week,
+                    Mark=0,
+                    Remarks="Add"
                 };
 
                 _dtabaseSet.Submisions.Add(submission);

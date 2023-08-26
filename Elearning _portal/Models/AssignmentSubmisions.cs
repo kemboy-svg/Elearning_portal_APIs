@@ -12,6 +12,10 @@ namespace Elearning__portal.Models
         public string Content { get; set; }
         public DateTime SubmissionTime { get; set; }
 
+        public int Mark { get; set; }
+
+        public string Remarks { get; set; }
+        public string Week { get; set; }
 
         public Guid StudentId { get; set; }
         

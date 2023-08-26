@@ -39,7 +39,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("LecturerId");
 
-                    b.ToTable("Announcements");
+                    b.ToTable("Announcements", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.ApplicationUser", b =>
@@ -141,7 +141,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Assignments");
+                    b.ToTable("Assignments", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.AssignmentSubmisions", b =>
@@ -157,11 +157,22 @@ namespace Elearning__portal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Mark")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("SubmissionTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Week")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -169,7 +180,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Submisions");
+                    b.ToTable("Submisions", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Enrollment", b =>
@@ -193,7 +204,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Lecturer", b =>
@@ -221,7 +232,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Lecturers");
+                    b.ToTable("Lecturers", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Notes", b =>
@@ -252,7 +263,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Notes", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Student", b =>
@@ -282,7 +293,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Unit", b =>
@@ -300,7 +311,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
