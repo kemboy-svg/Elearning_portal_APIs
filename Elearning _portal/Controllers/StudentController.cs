@@ -369,7 +369,8 @@ namespace Elearning__portal.Controllers
                     StudentId = StudentId,
                     Week=model.Week,
                     Mark=0,
-                    Remarks="Add"
+                    Remarks="Empty",
+                    IsGraded=false
                 };
 
                 _dtabaseSet.Submisions.Add(submission);
@@ -380,6 +381,42 @@ namespace Elearning__portal.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "An error occurred" + ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("api/getStudentSubmissions")]
+        public async Task<IActionResult> GetSubmissions(Guid StudentId)
+        {
+            try
+            {
+                
+                var submissions = await _dtabaseSet.Submisions
+                    .Where(s => s.StudentId == StudentId)
+                    .Include (e=>e.Assignment)
+                    .ThenInclude(e=>e.Unit)
+                    .ToListAsync();
+
+                if (submissions == null || submissions.Count == 0)
+                {
+                    return BadRequest("No submissions found for the specified StudentId");
+                }
+
+                var result = submissions.Select(mySubmission=>new
+                {
+                    MarkAdded = mySubmission.Mark,
+                    AddedRemarks=mySubmission.Remarks,
+                    WeekDate=mySubmission.Week,
+                    UnitName=mySubmission.Assignment.Unit.unit_name,
+                    UnitCode=mySubmission.Assignment.Unit.unit_code,
+                    Graded=mySubmission.IsGraded,
+
+                });
+               
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
 

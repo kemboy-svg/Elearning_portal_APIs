@@ -16,7 +16,7 @@ namespace Elearning__portal.Models
 
         public string Remarks { get; set; }
         public string Week { get; set; }
-
+        public bool IsGraded { get; set; }
         public Guid StudentId { get; set; }
         
         public virtual Student Student { get; set; }

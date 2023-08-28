@@ -622,14 +622,10 @@ namespace Elearning__portal.Controllers
                     return BadRequest("Submission not found");
                 }
 
-                // Update the properties of the existing submission
                 submission.Mark = model.Mark;
                 submission.Remarks = model.Remarks;
+                submission.IsGraded = true;
 
-                // If you have other properties in the AssignmentSubmisions model that you want to update,
-                // update them here as well.
-
-                // Save the changes to the database
                 await _dtabaseSet.SaveChangesAsync();
 
                 return Ok("Marks updated successfully");

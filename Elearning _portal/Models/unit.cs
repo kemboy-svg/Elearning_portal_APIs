@@ -18,6 +18,7 @@ namespace Elearning__portal.Models
 
         public ICollection<Notes> Notes { get; set; }
         public ICollection<Assignment> Assignments { get; set; }
+       
 
     }
 }

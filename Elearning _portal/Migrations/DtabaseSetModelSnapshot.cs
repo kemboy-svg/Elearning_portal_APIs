@@ -39,7 +39,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("LecturerId");
 
-                    b.ToTable("Announcements", (string)null);
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.ApplicationUser", b =>
@@ -141,7 +141,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Assignments", (string)null);
+                    b.ToTable("Assignments");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.AssignmentSubmisions", b =>
@@ -156,6 +156,9 @@ namespace Elearning__portal.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsGraded")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Mark")
                         .HasColumnType("int");
@@ -180,7 +183,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Submisions", (string)null);
+                    b.ToTable("Submisions");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Enrollment", b =>
@@ -204,7 +207,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Lecturer", b =>
@@ -232,7 +235,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Lecturers", (string)null);
+                    b.ToTable("Lecturers");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Notes", b =>
@@ -263,7 +266,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Notes", (string)null);
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Student", b =>
@@ -293,7 +296,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Unit", b =>
@@ -311,7 +314,7 @@ namespace Elearning__portal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
