@@ -28,16 +28,11 @@ namespace Elearning__portal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("LecturerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LecturerId");
 
                     b.ToTable("Announcements");
                 });
@@ -450,17 +445,6 @@ namespace Elearning__portal.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Elearning__portal.Models.Announcements", b =>
-                {
-                    b.HasOne("Elearning__portal.Models.Lecturer", "Lecturer")
-                        .WithMany("Announcements")
-                        .HasForeignKey("LecturerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lecturer");
-                });
-
             modelBuilder.Entity("Elearning__portal.Models.Assignment", b =>
                 {
                     b.HasOne("Elearning__portal.Models.Unit", "Unit")
@@ -586,11 +570,6 @@ namespace Elearning__portal.Migrations
             modelBuilder.Entity("Elearning__portal.Models.Assignment", b =>
                 {
                     b.Navigation("Submisions");
-                });
-
-            modelBuilder.Entity("Elearning__portal.Models.Lecturer", b =>
-                {
-                    b.Navigation("Announcements");
                 });
 
             modelBuilder.Entity("Elearning__portal.Models.Student", b =>

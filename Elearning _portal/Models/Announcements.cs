@@ -10,7 +10,6 @@ namespace Elearning__portal.Models
         public Guid Id { get; set; }
         public string Message { get; set; }
 
-        public virtual Lecturer Lecturer { get; set; }
-        public Guid LecturerId { get; set; }
+       
     }
 }

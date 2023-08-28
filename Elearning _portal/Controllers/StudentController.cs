@@ -420,7 +420,14 @@ namespace Elearning__portal.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/GetAnnouncements")]
 
+        public async Task<IActionResult> GetAnnouncements()
+        {
+            var messages = await _dtabaseSet.Announcements.ToListAsync();
+            return Ok(messages);
+        }
 
 
     }

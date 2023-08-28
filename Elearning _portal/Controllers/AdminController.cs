@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Elearning__portal.Models;
 using Microsoft.AspNetCore.Authorization;
+using Elearning__portal.Data;
 
 namespace Elearning__portal.Controllers
 {
@@ -13,11 +14,13 @@ namespace Elearning__portal.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly DtabaseSet _dtabaseSet;
 
-        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DtabaseSet dtabaseSet)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _dtabaseSet = dtabaseSet;
         }
        
         [HttpPost]
@@ -53,5 +56,33 @@ namespace Elearning__portal.Controllers
             }
             return Ok(admin);
         }
+
+        [HttpPost]
+        [Route("post/Announcements")]
+
+        public async Task<IActionResult> PostAnnouncements( Announcements model)
+        {
+            try
+            {
+                
+
+                var message = new Announcements
+                {
+                    Message = model.Message,
+                    
+
+                };
+                _dtabaseSet.Announcements.Add(message);
+                await _dtabaseSet.SaveChangesAsync();
+                return Ok("Announcent sent successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "An error occurred while sending the message" + ex.Message);
+            }
+        }
     }
+
+
 }

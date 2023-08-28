@@ -534,7 +534,7 @@ namespace Elearning__portal.Controllers
                 var message = new Announcements
                 {
                     Message = model.Message,
-                    LecturerId= lecturerId
+                    
 
                 };
                 _dtabaseSet.Announcements.Add(message);
