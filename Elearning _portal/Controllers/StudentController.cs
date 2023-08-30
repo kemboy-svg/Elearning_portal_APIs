@@ -429,6 +429,65 @@ namespace Elearning__portal.Controllers
             return Ok(messages);
         }
 
+        [HttpGet]
+        [Route("api/GetAllAssignment")]
+        public async Task<IActionResult> GetAssignments(string email)
+        {
+            try
+            {
+                var student = await _dtabaseSet.Students
+                    .Include(e => e.Enrollments)
+                    .ThenInclude(e => e.Unit)
+                        .ThenInclude(n => n.Assignments)
+                    .FirstOrDefaultAsync(l => l.Email == email);
+
+                if (student == null)
+                {
+                    return NotFound("Student not found");
+                }
+
+                
+                student.Enrollments = student.Enrollments.Where(e => e.IsApproved).ToList();
+
+                
+                var assignmentDTOs = new List<AssignmentDTO>();
+
+                foreach (var enrollment in student.Enrollments)
+                {
+                    if (enrollment.Unit != null)
+                    {
+
+                        foreach (var assignment in enrollment.Unit.Assignments)
+                        {
+                            var isSubmitted = await _dtabaseSet.Submisions
+                        .AnyAsync(s => s.AssignmentId == assignment.Id);
+
+                            assignmentDTOs.Add(new AssignmentDTO
+                            {
+                               
+                                AssignmentName = assignment.FileName,
+                                DueDate = assignment.DueDate,
+                                AssignmentDescription=assignment.Instruction,
+                                UnitName=enrollment.Unit.unit_name,
+                                Week=assignment.Week,
+                                IsSubmitted=isSubmitted
+
+                                
+                            });
+                        }
+                    }
+                }
+
+                return Ok(assignmentDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the student details: " + ex.Message);
+            }
+        }
+
+        // Define a DTO class for assignment details
+      
 
     }
 }
