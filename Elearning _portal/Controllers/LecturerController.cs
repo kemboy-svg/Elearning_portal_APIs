@@ -63,8 +63,16 @@ namespace Elearning__portal.Controllers
 
             if (result.Succeeded)
             {
-                // Authentication successful 
-                return StatusCode(200, "Logged in successfully");
+                // Check if the user has a specific role (e.g., "Admin")
+                if (await _userManager.IsInRoleAsync(user, "Lecturer"))
+                {
+                    
+                    return StatusCode(200, "Logged in successfully as Lecturer");
+                }
+                else
+                {
+                    return Unauthorized("You do not have permission to log in check your credentials and try again");
+                }
             }
 
             return Unauthorized("Invalid login attempt");
@@ -231,7 +239,7 @@ namespace Elearning__portal.Controllers
         [HttpPost]
         [Route("api/UploadNotes")]
 
-        public async Task<IActionResult> UploadNotes(IFormFile file, [FromForm] Guid unitId, string description, string week)
+        public async Task<IActionResult> UploadNotes(IFormFile file, [FromForm] Guid unitId, Notes model)
         {
             try
             {
@@ -259,8 +267,8 @@ namespace Elearning__portal.Controllers
                 {
 
                     FileName = fileName,
-                    Description = description,
-                    Week = week,
+                    Description = model.Description,
+                    Week = model.Week,
                     UnitId= unitId
 
                 };

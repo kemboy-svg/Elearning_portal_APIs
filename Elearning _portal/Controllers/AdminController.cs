@@ -1,10 +1,9 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using Elearning__portal.Models;
-using Microsoft.AspNetCore.Authorization;
 using Elearning__portal.Data;
+
 
 namespace Elearning__portal.Controllers
 {
@@ -22,7 +21,7 @@ namespace Elearning__portal.Controllers
             _userManager = userManager;
             _dtabaseSet = dtabaseSet;
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
         {
@@ -37,12 +36,21 @@ namespace Elearning__portal.Controllers
 
             if (result.Succeeded)
             {
-                // Authentication successful 
-                return StatusCode(200, "Logged in successfully");
+                // Check if the user has a specific role (e.g., "Admin")
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    // Authentication successful and user has the required role
+                    return StatusCode(200, "Logged in successfully as an Admin");
+                }
+                else
+                {
+                    return Unauthorized("You do not have permission to log in as an Admin");
+                }
             }
 
             return Unauthorized("Invalid login attempt");
         }
+
 
         [HttpGet]
         [Route("GetAdminByEmail")]
@@ -82,6 +90,14 @@ namespace Elearning__portal.Controllers
                 return StatusCode(500, "An error occurred while sending the message" + ex.Message);
             }
         }
+        [HttpGet("GetTotal")]
+        public ActionResult<int> GetTotalStudents()
+        {
+            int totalStudents = _dtabaseSet.Students.Count();
+            int totalLecturers = _dtabaseSet.Lecturers.Count();
+            return Ok(totalStudents);
+        }
+
     }
 
 

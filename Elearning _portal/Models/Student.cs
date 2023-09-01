@@ -15,6 +15,7 @@ namespace Elearning__portal.Models
         public string fullName { get; set; }
         public int Age { get; set; }
 
+        public string ? ProfileName { get; set; } 
         public ICollection<Enrollment> Enrollments { get; set; }
 
         public ICollection<AssignmentSubmisions> Submisions { get; set;}

@@ -58,8 +58,16 @@ namespace Elearning__portal.Controllers
 
             if (result.Succeeded)
             {
-                // Authentication successful 
-                return StatusCode(200, "Logged in successfully");
+                // Check if the user has a specific role (e.g., "Admin")
+                if (await _userManager.IsInRoleAsync(user, "Student"))
+                {
+                    // Authentication successful and user has the required role
+                    return StatusCode(200, "Logged in successfully as a student");
+                }
+                else
+                {
+                    return Unauthorized("You do not have permission to log in check your credentials and try again");
+                }
             }
 
             return Unauthorized("Invalid login attempt");
@@ -274,7 +282,7 @@ namespace Elearning__portal.Controllers
         [Route("api/viewAssignmentsAndNotesByUnitId")]
         public async Task<IActionResult> AssignmentsAndNotes(Guid unitId, string week)
         {
-            // Check if week parameter is provided
+             
             if (string.IsNullOrEmpty(week))
             {
                 return BadRequest("Week parameter is required.");
@@ -420,14 +428,7 @@ namespace Elearning__portal.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("api/GetAnnouncements")]
-
-        public async Task<IActionResult> GetAnnouncements()
-        {
-            var messages = await _dtabaseSet.Announcements.ToListAsync();
-            return Ok(messages);
-        }
+       
 
         [HttpGet]
         [Route("api/GetAllAssignment")]
@@ -438,7 +439,7 @@ namespace Elearning__portal.Controllers
                 var student = await _dtabaseSet.Students
                     .Include(e => e.Enrollments)
                     .ThenInclude(e => e.Unit)
-                        .ThenInclude(n => n.Assignments)
+                    .ThenInclude(n => n.Assignments)
                     .FirstOrDefaultAsync(l => l.Email == email);
 
                 if (student == null)
@@ -460,7 +461,7 @@ namespace Elearning__portal.Controllers
                         foreach (var assignment in enrollment.Unit.Assignments)
                         {
                             var isSubmitted = await _dtabaseSet.Submisions
-                        .AnyAsync(s => s.AssignmentId == assignment.Id);
+                             .AnyAsync(s => s.AssignmentId == assignment.Id);
 
                             assignmentDTOs.Add(new AssignmentDTO
                             {
@@ -486,8 +487,70 @@ namespace Elearning__portal.Controllers
             }
         }
 
-        // Define a DTO class for assignment details
-      
+        [HttpGet]
+        [Route("api/GetAnnouncements")]
+
+        public async Task<IActionResult> Getnnouncements()
+        {
+            try
+            {
+                var announcements =await  _dtabaseSet.Announcements.ToListAsync();
+                return Ok(announcements);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Failed to fetch"+ex.Message);
+            }
+        }
+
+
+
+        [HttpPut]
+        [Route("api/UploadProfile")]
+
+        public async Task<IActionResult> UploadNotes(IFormFile file, [FromForm] Guid studentId, Student model)
+        {
+            try
+            {
+                var student = await _dtabaseSet.Students.FindAsync(studentId);
+                
+                
+                if (student == null)
+                {
+                    return BadRequest("Anuothrized. The specified student does not exist.");
+                }
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No file selected");
+                }
+                var ProfileFolder = Path.Combine(Directory.GetCurrentDirectory(), "ProfileUploadsFolder");
+                if (!Directory.Exists(ProfileFolder))
+                    Directory.CreateDirectory(ProfileFolder);
+
+                var profileName = Path.GetFileName(file.FileName);
+                var FilePath = Path.Combine(ProfileFolder, profileName);
+
+                using (var stream = new FileStream(FilePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                
+                
+                student.ProfileName = profileName; 
+                await _dtabaseSet.SaveChangesAsync();
+
+
+                return Ok("Your profile uploaded successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred uploading your profile: " + ex.Message);
+            }
+
+        }
+
+
 
     }
 }

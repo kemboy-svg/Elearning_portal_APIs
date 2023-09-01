@@ -281,6 +281,9 @@ namespace Elearning__portal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProfileName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Reg_no")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

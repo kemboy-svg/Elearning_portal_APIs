@@ -35,6 +35,8 @@ builder.Services.Configure<FormOptions>(options =>
     options.MemoryBufferThreshold = int.MaxValue;
 });
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opts=>opts.TokenLifespan=TimeSpan.FromHours(10)); 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -61,14 +63,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"UnitNotes")),
-//    RequestPath = new PathString("/UnitNotes")
-//});
 
-// Call the method to seed the admin user and role after the identity middleware
 app.UseAuthentication();
+
 SeedAdminUserAndRole(app).Wait();
 
 app.UseAuthorization();
