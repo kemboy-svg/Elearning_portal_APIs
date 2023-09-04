@@ -139,7 +139,7 @@ namespace Elearning__portal.Controllers
 
         [HttpPut]
         [Route("api/Lecturer/{id}")]
-        public async Task<IActionResult> UpdateLecturer([FromBody] RegisterDTO model, Guid Id )
+        public async Task<IActionResult> UpdateLecturer(Guid Id, [FromBody] RegisterDTO model )
         {
             try
              {
